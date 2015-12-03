@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-crosswalk-webview"
-        version="1.4.0">
+        version="1.4.0.1">
 
     <name>Crosswalk WebView Engine</name>
     <description>Changes the default WebView to CrossWalk</description>
@@ -41,6 +41,7 @@
 
         <framework src="platforms/android/xwalk.gradle" custom="true" type="gradleReference"/>
 
+        <hook type="before_plugin_install" src="hooks/before_plugin_install/prerequisites.js"/>
         <hook type="after_plugin_install" src="hooks/after_plugin_install/000-shared_mode_special.js"/>
         <hook type="before_plugin_uninstall" src="hooks/before_plugin_uninstall/000-shared_mode_special.js"/>
     </platform>

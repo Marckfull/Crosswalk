@@ -7,9 +7,13 @@ module.exports = function(context) {
         ConfigParser = context.requireCordovaModule("cordova-lib/src/configparser/ConfigParser");
         XmlHelpers = context.requireCordovaModule("cordova-lib/src/util/xml-helpers");
     } catch (e) {
-        // cordova-lib >= 5.3.4 doesn't contain ConfigParser and xml-helpers anymore
-        ConfigParser = context.requireCordovaModule("cordova-common").ConfigParser;
-        XmlHelpers = context.requireCordovaModule("cordova-common").xmlHelpers;
+        try {
+            // cordova-lib >= 5.3.4 doesn't contain ConfigParser and xml-helpers anymore
+            ConfigParser = context.requireCordovaModule("cordova-common").ConfigParser;
+            XmlHelpers = context.requireCordovaModule("cordova-common").xmlHelpers;
+        } catch (e2) {
+            console.error("Hook failed to load cordova-common");
+        }
     }
 
     /** @external */
