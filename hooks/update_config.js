@@ -7,31 +7,10 @@ module.exports = function(context) {
         ConfigParser = context.requireCordovaModule("cordova-lib/src/configparser/ConfigParser");
         XmlHelpers = context.requireCordovaModule("cordova-lib/src/util/xml-helpers");
     } catch (e) {
-        try {
-            // cordova-lib >= 5.3.4 doesn't contain ConfigParser and xml-helpers anymore
-            ConfigParser = context.requireCordovaModule("cordova-common").ConfigParser;
-            XmlHelpers = context.requireCordovaModule("cordova-common").xmlHelpers;
-        } catch (e2) {
-            console.error("Hook failed to load cordova-common, trying npm install now");
-            var child_process = context.requireCordovaModule('child_process');
-            child_process.execSync('npm install', {cwd:__dirname});
-            console.error("npm install finished, now trying to invoke cordova-common again");
-            try {
-                // cordova-lib >= 5.3.4 doesn't contain ConfigParser and xml-helpers anymore
-                ConfigParser = context.requireCordovaModule("cordova-common").ConfigParser;
-                XmlHelpers = context.requireCordovaModule("cordova-common").xmlHelpers;
-            } catch (e3) {
-                console.error("Hook installing prerequisites, giving up");
-            }
-        }
+        // cordova-lib >= 5.3.4 doesn't contain ConfigParser and xml-helpers anymore
+        ConfigParser = context.requireCordovaModule("cordova-common").ConfigParser;
+        XmlHelpers = context.requireCordovaModule("cordova-common").xmlHelpers;
     }
-
-    if (ConfigParser === undefined) {
-        console.error("ConfigParser undefined");
-        return;
-    }
-
-    console.error("ConfigParser found, woohoo!");
 
     /** @external */
     var fs = context.requireCordovaModule('fs'),
@@ -57,14 +36,14 @@ module.exports = function(context) {
         var child = et.XML('<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />');
         XmlHelpers.graftXML(projectManifestXmlRoot, [child], '/manifest');
         fs.writeFileSync(projectManifestFile, projectManifestXmlRoot.write({indent: 4}), 'utf-8');
-    };
+    }
 
     var removePermission = function() {
         var projectManifestXmlRoot = XmlHelpers.parseElementtreeSync(projectManifestFile);
         var child = et.XML('<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />');
         XmlHelpers.pruneXML(projectManifestXmlRoot, [child], '/manifest');
         fs.writeFileSync(projectManifestFile, projectManifestXmlRoot.write({indent: 4}), 'utf-8');
-    };
+    }
 
     var defaultPreferences = function() {
         var pluginPreferences = {};
@@ -90,7 +69,7 @@ module.exports = function(context) {
         });
 
         return pluginPreferences;
-    };
+    }
 
     /** The style of name align with config.xml */
     var setConfigPreference = function(name, value) {
@@ -100,7 +79,7 @@ module.exports = function(context) {
                 xwalkVariables[localName] = value;
             }
         }
-    };
+    }
 
     /** Pase the cli command to get the specific preferece*/
     var parseCliPreference = function() {
@@ -118,7 +97,7 @@ module.exports = function(context) {
                 }
             });
         }
-    };
+    }
 
     /** Add preference */
     this.addPreferences = function() {
@@ -144,7 +123,7 @@ module.exports = function(context) {
         if(preferenceUpdated) {
             fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
         }
-    };
+    }
 
     /** Remove preference*/
     this.removePreferences = function() {
@@ -161,7 +140,7 @@ module.exports = function(context) {
             }
         }
         fs.writeFileSync(projectConfigurationFile, configXmlRoot.write({indent: 4}), 'utf-8');
-    };
+    }
 
     xwalkVariables = defaultPreferences();
 
