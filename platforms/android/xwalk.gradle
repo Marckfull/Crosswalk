@@ -53,7 +53,18 @@ if (cdvBuildMultipleApks == null) {
     ext.cdvBuildMultipleApks = getConfigPreference("xwalkMultipleApk").toBoolean();
 }
 if (cdvMinSdkVersion == null) {
+    // first check config.xml
     def minSdk = getConfigPreference("android-minSdkVersion");
+
+    // if there's no minSdk defined check AndroidManifest.xml
+    if (!minSdk) {
+        def manifest = new XmlSlurper().parse(file("AndroidManifest.xml"))
+        manifest.children().find { it.name() == "uses-sdk" }.each {
+            minSdk = it.attributes().get("android:minSdkVersion")
+        }
+    }
+
+    // update the minSdk from config.xml or AndroidManifest, with a fallback to 14
     ext.cdvMinSdkVersion =  minSdk && minSdk.toInteger() > 14 ? minSdk : 14;
 }
 
