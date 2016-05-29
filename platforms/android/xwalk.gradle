@@ -46,9 +46,16 @@ def getConfigPreference(name) {
     return ret ? ret : defaultValue
 }
 
-if (cdvBuildMultipleApks == null) {
-    ext.cdvBuildMultipleApks = getConfigPreference("xwalkMultipleApk").toBoolean();
+if (!project.hasProperty('xwalk64bit')) {
+    ext.xwalk64bit = getConfigPreference("xwalk64bit");
+    println xwalk64bit
 }
+if (cdvBuildMultipleApks == null) {
+    ext.xwalkMultipleApk = getConfigPreference("xwalkMultipleApk").toBoolean();
+} else {
+    ext.xwalkMultipleApk = cdvBuildMultipleApks.toBoolean();
+}
+
 if (cdvMinSdkVersion == null) {
     // first check config.xml
     def minSdk = getConfigPreference("android-minSdkVersion");
